@@ -1,8 +1,16 @@
 import Seo from "../components/Seo";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function Home({ results }) {
+export default function Home() {
+  const [movies, setMovies] = useState();
+  useEffect(() => {
+    (async () => {
+      const { results } = await (await fetch(`api/movies`)).json();
+      setMovies(results);
+    })();
+  }, []);
   const router = useRouter();
   const onClick = (id, title) => {
     router.push(`/movies/${title}/${id}`);
@@ -10,7 +18,7 @@ export default function Home({ results }) {
   return (
     <div className="container">
       <Seo title="Home" />
-      {results?.map((movie) => (
+      {movies?.map((movie) => (
         <Link
           onClick={() => onClick(movie.id, movie.original_title)}
           href={{
@@ -50,15 +58,4 @@ export default function Home({ results }) {
       `}</style>
     </div>
   );
-}
-
-export async function getServerSideProps() {
-  const { results } = await (
-    await fetch(`http://localhost:3000/api/movies`)
-  ).json();
-  return {
-    props: {
-      results,
-    },
-  };
 }

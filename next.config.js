@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
+
+const debug = process.env.NODE_ENV !== "production";
+const repository = "https://huzan2.github.io/NextJS_Movie";
+
 const nextConfig = {
   reactStrictMode: false,
+  assetPrefix: !debug ? `/${repository}/` : "",
+  trailingSlash: true,
   async redirects() {
     return [
       {
